@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+"    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">"
+"    <title>Kassa Chicken's Egg | Farm-Fresh, Gathered Daily</title>"
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+"                        cream: '#FDFBF7',"
+"                        forest: '#1C352D',"
+"                        gold: '#FFB703',"
+"                        yolk: '#F4A261',"
+"                        darkGreen: '#11221C',"
+"                    },"
+                    fontFamily: {
+"                        serif: ['""Playfair Display""', 'serif'],"
+"                        sans: ['Inter', 'sans-serif'],"
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+"    <link href=""https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"" rel=""stylesheet"">"
+    <!-- Three.js (for the elegant interactive 3D Egg viewer) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+"            font-family: 'Inter', sans-serif;"
+            background-color: #FDFBF7;
+            color: #1C352D;
+        }
+"        h1, h2, h3, .font-serif {"
+"            font-family: 'Playfair Display', serif;"
+        }
+        /* Custom scrollbar to keep layout premium */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1C352D;
+            border-radius: 4px;
+        }
+        /* Subtle glowing/pulsing effect for CTA */
+        @keyframes subtle-pulse {
+"            0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2); }"
+"            50% { transform: scale(1.03); box-shadow: 0 4px 25px rgba(255, 183, 3, 0.4); }"
+        }
+        .animate-subtle-pulse {
+            animation: subtle-pulse 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+ 
+    <!-- NAVIGATION BAR -->
+    <nav class="sticky top-0 z-50 bg-cream/90 backdrop-blur-md border-b border-forest/10 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-forest rounded-full flex items-center justify-center shadow-lg transform hover:rotate-12 transition-transform duration-300">
+                        <svg class="w-6 h-6 text-gold" fill="currentColor" viewBox="0 0 24 24">
+                            <!-- Custom egg-chicken icon -->
+                            <path d="M12 2C7.5 2 4 7.5 4 12c0 4.5 3.5 10 8 10s8-5.5 8-10c0-4.5-3.5-10-8-10zm0 18c-3.3 0-6-4.2-6-8s2.7-8 6-8 6 4.2 6 8-2.7 8-6 8z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="font-serif text-xl font-bold tracking-tight text-forest block leading-none">Kassa Chicken's</span>
+                        <span class="text-[10px] uppercase tracking-widest text-gold font-bold block mt-1">Premium Farm Produce</span>
+                    </div>
+                </div>
+ 
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-forest font-medium hover:text-gold transition-colors duration-200">Home</a>
+                    <a href="#why-us" class="text-forest/80 hover:text-forest font-medium transition-colors duration-200">Our Story</a>
+                    <a href="#products" class="text-forest/80 hover:text-forest font-medium transition-colors duration-200">Products</a>
+                    <a href="#subscription" class="text-forest/80 hover:text-forest font-medium transition-colors duration-200">Subscriptions</a>
+                    <a href="#contact" class="text-forest/80 hover:text-forest font-medium transition-colors duration-200">Contact & Wholesale</a>
+                </div>
+ 
+                <!-- Icons / CTAs -->
+                <div class="flex items-center space-x-4">
+                    <!-- Cart Button with dynamic badge -->
+                    <button onclick="toggleCart()" class="relative p-2.5 text-forest hover:bg-forest/5 rounded-full transition-all duration-200" aria-label="Open Shopping Cart">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                        <span id="cart-badge" class="absolute top-1 right-1 bg-gold text-forest text-xs font-bold px-2 py-0.5 rounded-full transform scale-0 transition-transform duration-300">0</span>
+                    </button>
+ 
+                    <a href="#products" class="hidden lg:inline-flex items-center justify-center px-5 py-2.5 border border-forest text-sm font-semibold rounded-full text-forest hover:bg-forest hover:text-cream transition-all duration-300">
+                        Order Online
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+ 
+    <!-- HERO SECTION with Interactive 3D Canvas -->
+    <section id="home" class="relative min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden py-12 lg:py-20">
+        <!-- Background organic shapes/grid -->
+        <div class="absolute inset-0 z-0 opacity-40">
+            <div class="absolute top-10 left-10 w-96 h-96 rounded-full bg-gold/10 blur-3xl"></div>
+            <div class="absolute bottom-10 right-10 w-[500px] h-[500px] rounded-full bg-forest/5 blur-3xl"></div>
+        </div>
+ 
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left: Elegant Headlines -->
+                <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-forest/5 border border-forest/10 text-forest text-xs uppercase font-semibold tracking-wider">
+                        <span class="w-2 h-2 rounded-full bg-gold animate-ping"></span>
+                        Freshly Gathered This Morning
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif text-forest font-bold leading-tight">
+"                        Farm-Fresh Quality, <br>"
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-forest to-gold italic">Gathered Daily</span> & Delivered Straight to You.
+                    </h1>
+                    
+                    <p class="text-lg text-forest/80 max-w-xl mx-auto lg:mx-0 font-light">
+"                        Indulge in nutrient-rich, organically farmed chicken and pure farm eggs in Hosanna. Perfect for modern, health-conscious families, fitness pioneers, and premium culinary businesses."
+                    </p>
+ 
+                    <!-- CTAs -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                        <a href="#products" class="animate-subtle-pulse inline-flex items-center justify-center px-8 py-4 bg-forest text-cream hover:bg-gold hover:text-forest text-base font-bold rounded-full shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                            Shop Fresh Now
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                        <a href="#why-us" class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-forest hover:bg-forest/5 border border-forest/20 text-base font-bold rounded-full transition-all duration-300">
+                            Our Farm Standards
+                        </a>
+                    </div>
+ 
+                    <!-- Trust indicators -->
+                    <div class="pt-8 border-t border-forest/15 grid grid-cols-3 gap-4">
+                        <div>
+                            <span class="block text-3xl font-serif font-bold text-forest">100%</span>
+                            <span class="text-xs text-forest/70 uppercase tracking-wider">Locally Sourced</span>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-serif font-bold text-forest"><24h</span>
+                            <span class="text-xs text-forest/70 uppercase tracking-wider">Gather to Delivery</span>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-serif font-bold text-forest">Zero</span>
+                            <span class="text-xs text-forest/70 uppercase tracking-wider">Antibiotics/Hormones</span>
+                        </div>
+                    </div>
+                </div>
+ 
+                <!-- Hero Right: Interactive 3D Egg Customizer & Scene -->
+                <div class="lg:col-span-6 relative flex flex-col items-center">
+                    
+                    <!-- 3D Canvas Box -->
+                    <div class="relative w-full max-w-[450px] aspect-square rounded-3xl bg-gradient-to-b from-cream to-forest/5 shadow-2xl border border-forest/5 overflow-hidden group">
+                        <!-- Instructions Overlay -->
+                        <div class="absolute top-4 left-4 right-4 z-20 flex justify-between items-center pointer-events-none">
+                            <span class="text-xs font-semibold uppercase tracking-widest text-forest/60 bg-cream/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-forest/5">
+                                Interactive 3D Model
+                            </span>
+                            <span class="text-xs text-forest/50 flex items-center gap-1.5">
+                                <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                                </svg>
+                                Drag to Rotate
+                            </span>
+                        </div>
+ 
+                        <!-- Canvas Container -->
+                        <div id="threejs-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+ 
+                        <!-- Interactive Egg Customizer Controls (Inside Frame) -->
+                        <div class="absolute bottom-4 left-4 right-4 z-20 bg-cream/90 backdrop-blur-md p-3.5 rounded-2xl border border-forest/10 flex flex-col gap-2">
+                            <p class="text-xs font-bold uppercase tracking-wider text-forest/80 text-center">Customize Your Showcase Egg</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="changeEggStyle('brown')" id="btn-egg-brown" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-forest text-cream border border-forest transition-all">
+                                    Classic Brown
+                                </button>
+                                <button onclick="changeEggStyle('white')" id="btn-egg-white" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cream text-forest border border-forest/20 hover:bg-forest/5 transition-all">
+                                    Organic White
+                                </button>
+                                <button onclick="changeEggStyle('gold')" id="btn-egg-gold" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cream text-forest border border-forest/20 hover:bg-forest/5 transition-all">
+                                    Royal Gold
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+ 
+                    <!-- Small Decorative Plate shadow / Ring -->
+                    <div class="w-2/3 h-6 bg-forest/10 rounded-full blur-xl -mt-3 relative z-0"></div>
+                </div>
+ 
+            </div>
+        </div>
+    </section>
+ 
+    <!-- VALUE PROPOSITION GRID -->
+    <section id="why-us" class="py-20 bg-forest text-cream relative overflow-hidden">
+        <!-- Floating details -->
+        <div class="absolute right-0 top-0 w-92 h-92 bg-gold/5 rounded-full blur-3xl"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <span class="text-gold text-xs uppercase font-bold tracking-widest block">Uncompromised Freshness</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold">Why Kassa Chicken Stands Apart</h2>
+                <div class="w-24 h-1 bg-gold mx-auto rounded-full"></div>
+                <p class="text-cream/80 font-light text-base md:text-lg">
+"                    We've redefined local egg and poultry farming in Ethiopia. Our practices emphasize high-hygiene standards, absolute bird wellness, and unmatched delivery speeds."
+                </p>
+            </div>
+ 
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-darkGreen/50 p-8 rounded-3xl border border-cream/10 hover:border-gold/30 transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-2xl bg-gold/10 flex items-center justify-center mb-6 border border-gold/20">
+                        <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold mb-3 text-cream">100% Locally Sourced</h3>
+                    <p class="text-cream/70 text-sm leading-relaxed">
+"                        Every single item is produced right at our local farm in Hosanna. We support pure ethical sourcing, allowing complete traceability of your food."
+                    </p>
+                </div>
+ 
+                <!-- Card 2 -->
+                <div class="bg-darkGreen/50 p-8 rounded-3xl border border-cream/10 hover:border-gold/30 transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-2xl bg-gold/10 flex items-center justify-center mb-6 border border-gold/20">
+                        <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold mb-3 text-cream">Guaranteed Freshness</h3>
+                    <p class="text-cream/70 text-sm leading-relaxed">
+                        Gathered daily at sunrise and kept at optimal conditions. We eliminate storage backlogs so you enjoy the best flavor and protein profile.
+                    </p>
+                </div>
+ 
+                <!-- Card 3 -->
+                <div class="bg-darkGreen/50 p-8 rounded-3xl border border-cream/10 hover:border-gold/30 transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-2xl bg-gold/10 flex items-center justify-center mb-6 border border-gold/20">
+                        <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold mb-3 text-cream">Same-Day / Next-Day Delivery</h3>
+                    <p class="text-cream/70 text-sm leading-relaxed">
+                        Our internal logistics team ensures rapid deliveries right to your doorstep. From nest to kitchen in recorded record times.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+    <!-- FEATURED PRODUCTS (THE MARKETPLACE PREVIEW) -->
+    <section id="products" class="py-20 bg-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <span class="text-gold text-xs uppercase font-bold tracking-widest block mb-1">Our Premium Products</span>
+                    <h2 class="text-3xl sm:text-4xl font-serif font-bold text-forest">The Marketplace Selection</h2>
+                </div>
+                <!-- Interactive Category Filters -->
+                <div class="flex flex-wrap gap-2 mt-6 md:mt-0">
+                    <button onclick="filterProducts('all')" id="btn-filter-all" class="px-5 py-2 rounded-full text-xs font-semibold bg-forest text-cream border border-forest transition-all">All Products</button>
+                    <button onclick="filterProducts('eggs')" id="btn-filter-eggs" class="px-5 py-2 rounded-full text-xs font-semibold bg-transparent text-forest/70 border border-forest/10 hover:bg-forest/5 hover:text-forest transition-all">Eggs</button>
+                    <button onclick="filterProducts('chicken')" id="btn-filter-chicken" class="px-5 py-2 rounded-full text-xs font-semibold bg-transparent text-forest/70 border border-forest/10 hover:bg-forest/5 hover:text-forest transition-all">Chicken</button>
+                </div>
+            </div>
+ 
+            <!-- Products Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="products-grid">
+                
+                <!-- Product Card 1: Premium Grade-A Large Eggs (Updated Pyramid Stack matching image_28bbde.png) -->
+                <div class="product-card bg-white rounded-3xl border border-forest/5 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" data-category="eggs">
+                    <div class="relative bg-gradient-to-tr from-cream to-amber-50 aspect-square flex items-center justify-center p-6 overflow-hidden">
+                        <!-- Custom dynamic SVG drawing of elegant eggs stacked inside a tray pyramid (image_28bbde.png style) -->
+                        <svg class="w-4/5 h-4/5" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background glow -->
+                            <circle cx="100" cy="110" r="70" fill="#FFB703" fill-opacity="0.08"/>
+                            <!-- Tray base -->
+                            <path d="M25 140 L175 140 L160 165 L40 165 Z" fill="#D3C5AE" stroke="#A69881" stroke-width="2"/>
+                            <path d="M30 145 Q65 155 100 145 Q135 155 170 145" stroke="#8E7E67" stroke-width="3" stroke-linecap="round"/>
+                            <!-- Tier 4 (Bottom) - 5 eggs -->
+                            <ellipse cx="45" cy="130" rx="15" ry="20" fill="#D38244" stroke="#FFF" stroke-width="0.5"/>
+                            <ellipse cx="72" cy="130" rx="15" ry="20" fill="#E2955A" stroke="#FFF" stroke-width="0.5"/>
+                            <ellipse cx="100" cy="130" rx="15" ry="20" fill="#CD7B3C" stroke="#FFF" stroke-width="0.5"/>
+                            <ellipse cx="128" cy="130" rx="15" ry="20" fill="#E89E62" stroke="#FFF" stroke-width="0.5"/>
+                            <ellipse cx="155" cy="130" rx="15" ry="20" fill="#CD7B3C" stroke="#FFF" stroke-width="0.5"/>
+                            <!-- Tier 3 - 4 eggs -->
+                            <ellipse cx="58" cy="112" rx="15" ry="20" fill="#CD7B3C" stroke="#FFF" stroke-width="0.5"/>
+                            <ellipse cx="86" cy="112" rx="15" ry="20" fill="#D38244" stroke="#FFF" stroke-width="0.5"/>
+                            <ellipse cx="114" cy="112" rx="15" ry="20" fill="#E2955A" stroke="#FFF" stroke-width="0.5"/>
+                            <ellipse cx="142" cy="112" rx="15" ry="20" fill="#CD7B3C" stroke="#FFF" stroke-width="0.5"/>
+                            <!-- Tier 2 - 3 eggs -->
+                            <ellipse cx="72" cy="94" rx="15" ry="20" fill="#E2955A" stroke="#FFF" stroke-width="0.5"/>
+                            <ellipse cx="100" cy="94" rx="15" ry="20" fill="#D38244" stroke="#FFF" stroke-width="0.5"/>
+                            <ellipse cx="128" cy="94" rx="15" ry="20" fill="#CD7B3C" stroke="#FFF" stroke-width="0.5"/>
+                            <!-- Tier 1 (Top) - 1 egg -->
+                            <ellipse cx="100" cy="74" rx="15" ry="20" fill="#D38244" stroke="#FFF" stroke-width="0.5"/>
+                            <!-- Highlight shine -->
+                            <ellipse cx="100" cy="65" rx="3" ry="5" fill="#FFF" opacity="0.3" transform="rotate(-15 100 65)"/>
+                        </svg>
+                        <span class="absolute top-4 left-4 bg-forest text-cream text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Top Seller</span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-serif font-bold text-lg text-forest">Grade A Large Eggs</h3>
+                                <p class="text-xs text-forest/60">30 Eggs Pack / Carton Tray (25 Br/egg)</p>
+                            </div>
+                            <span class="text-lg font-bold text-forest">Br 750</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs text-gold">?????</span>
+                            <span class="text-xs text-forest/50">(128 reviews)</span>
+                        </div>
+"                        <button onclick=""addToCart('Grade A Large Eggs', 750, 'eggs')"" class=""w-full py-3 bg-forest hover:bg-gold text-cream hover:text-forest font-bold rounded-xl text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"">"
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+ 
+                <!-- Product Card 2: Organic Brown Extra-Large (Updated Single Egg matching image_28bb86.jpg) -->
+                <div class="product-card bg-white rounded-3xl border border-forest/5 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" data-category="eggs">
+                    <div class="relative bg-gradient-to-tr from-cream to-amber-50 aspect-square flex items-center justify-center p-6 overflow-hidden">
+                        <!-- Custom dynamic SVG drawing of elegant single egg (image_28bb86.jpg style) -->
+                        <svg class="w-4/5 h-4/5" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Soft floor shadow -->
+                            <ellipse cx="100" cy="170" rx="45" ry="8" fill="#1C352D" fill-opacity="0.12"/>
+                            <!-- Main Egg Gradient -->
+                            <defs>
+                                <radialGradient id="eggGrad" cx="35%" cy="35%" r="65%">
+                                    <stop offset="0%" stop-color="#FCD9B8" />
+                                    <stop offset="40%" stop-color="#D98E54" />
+                                    <stop offset="100%" stop-color="#9A5624" />
+                                </radialGradient>
+                            </defs>
+                            <!-- Egg Shape Curve -->
+"                            <path d=""M100 30 C 55 30, 45 110, 45 130 C 45 155, 70 165, 100 165 C 130 165, 155 155, 155 130 C 155 110, 145 30, 100 30 Z"" fill=""url(#eggGrad)""/>"
+                            <!-- Realistic Speckles/Texture -->
+                            <g fill="#7A3D12" opacity="0.35">
+                                <circle cx="85" cy="70" r="1"/>
+                                <circle cx="115" cy="80" r="1.5"/>
+                                <circle cx="75" cy="110" r="1"/>
+                                <circle cx="125" cy="105" r="1.2"/>
+                                <circle cx="95" cy="135" r="1"/>
+                                <circle cx="110" cy="140" r="1.5"/>
+                                <circle cx="80" cy="145" r="1"/>
+                                <circle cx="120" cy="120" r="0.8"/>
+                                <circle cx="90" cy="95" r="1.1"/>
+                                <circle cx="105" cy="115" r="1.3"/>
+                            </g>
+                            <g fill="#FFF" opacity="0.2">
+                                <!-- Soft lighting highlight -->
+                                <ellipse cx="80" cy="75" rx="12" ry="25" transform="rotate(-20 80 75)"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-serif font-bold text-lg text-forest">Organic Extra-Large</h3>
+                                <p class="text-xs text-forest/60">12 Eggs Premium Box (25 Br/egg)</p>
+                            </div>
+                            <span class="text-lg font-bold text-forest">Br 300</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs text-gold">?????</span>
+                            <span class="text-xs text-forest/50">(94 reviews)</span>
+                        </div>
+"                        <button onclick=""addToCart('Organic Extra-Large', 300, 'eggs')"" class=""w-full py-3 bg-forest hover:bg-gold text-cream hover:text-forest font-bold rounded-xl text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"">"
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+ 
+                <!-- Product Card 3: Whole Broiler Chicken (Updated Upright Whole Chicken matching image_28bc23.jpg and priced at 1800 Br) -->
+                <div class="product-card bg-white rounded-3xl border border-forest/5 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" data-category="chicken">
+                    <div class="relative bg-gradient-to-tr from-cream to-emerald-50 aspect-square flex items-center justify-center p-6 overflow-hidden">
+                        <!-- Custom dynamic SVG drawing of whole broiler raw chicken matching image_28bc23.jpg -->
+                        <svg class="w-4/5 h-4/5" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Floor Shadow -->
+                            <ellipse cx="100" cy="165" rx="55" ry="12" fill="#1C352D" fill-opacity="0.08"/>
+                            <defs>
+                                <linearGradient id="broilerBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#FFFDFD" />
+                                    <stop offset="45%" stop-color="#FFECE6" />
+                                    <stop offset="100%" stop-color="#F2D3C9" />
+                                </linearGradient>
+                                <linearGradient id="broilerShadowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#FFF5F2" stop-opacity="0.9" />
+                                    <stop offset="100%" stop-color="#DFBBB1" />
+                                </linearGradient>
+                            </defs>
+"                            <!-- Main Breast/Body (Plump, Upright positioning matching image_28bc23.jpg) -->"
+"                            <path d=""M60 115 C55 80, 145 80, 140 115 C135 155, 65 155, 60 115 Z"" fill=""url(#broilerBodyGrad)"" stroke=""#EAD3CB"" stroke-width=""1.5""/>"
+                            <!-- Upper Neck area stub -->
+"                            <path d=""M90 85 C93 75, 107 75, 110 85 Z"" fill=""#FCE6DE"" opacity=""0.9""/>"
+"                            <!-- Wing (Foreground - pointing down/forward, curved back) -->"
+"                            <path d=""M62 110 C50 120, 50 145, 75 155 C70 140, 75 125, 62 110 Z"" fill=""url(#broilerShadowGrad)"" stroke=""#E5C1B6"" stroke-width=""1""/>"
+"                            <path d=""M138 110 C150 120, 150 145, 125 155 C130 140, 125 125, 138 110 Z"" fill=""url(#broilerShadowGrad)"" stroke=""#E5C1B6"" stroke-width=""1""/>"
+"                            <!-- Drumsticks/Thighs (Tucked up alongside the body, pointing forward) -->"
+"                            <path d=""M72 135 C60 135, 52 110, 68 95 C82 105, 80 125, 72 135 Z"" fill=""#FFEFEA"" stroke=""#E5C1B6"" stroke-width=""1""/>"
+"                            <path d=""M128 135 C140 135, 148 110, 132 95 C118 105, 120 125, 128 135 Z"" fill=""#FFEFEA"" stroke=""#E5C1B6"" stroke-width=""1""/>"
+                            <!-- Lower Leg Bones extending upwards -->
+"                            <path d=""M62 100 L50 72 C48 68, 56 62, 58 68 L70 95 Z"" fill=""#FFEFEA"" stroke=""#E5C1B6"" stroke-width=""1""/>"
+"                            <path d=""M138 100 L150 72 C152 68, 144 62, 142 68 L130 95 Z"" fill=""#FFEFEA"" stroke=""#E5C1B6"" stroke-width=""1""/>"
+                            <!-- Knuckle Joints at top of legs -->
+                            <circle cx="50" cy="72" r="5" fill="#F9DDD4" stroke="#E5C1B6" stroke-width="0.75"/>
+                            <circle cx="56" cy="68" r="5" fill="#F9DDD4" stroke="#E5C1B6" stroke-width="0.75"/>
+                            <circle cx="150" cy="72" r="5" fill="#F9DDD4" stroke="#E5C1B6" stroke-width="0.75"/>
+                            <circle cx="144" cy="68" r="5" fill="#F9DDD4" stroke="#E5C1B6" stroke-width="0.75"/>
+                        </svg>
+                        <span class="absolute top-4 left-4 bg-amber-500 text-cream text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Organic</span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-serif font-bold text-lg text-forest">Whole Broiler Chicken</h3>
+                                <p class="text-xs text-forest/60">Approx. 1.8kg - 2.2kg per piece</p>
+                            </div>
+"                            <span class=""text-lg font-bold text-forest"">Br 1,800</span>"
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs text-gold">?????</span>
+                            <span class="text-xs text-forest/50">(142 reviews)</span>
+                        </div>
+"                        <button onclick=""addToCart('Whole Broiler Chicken', 1800, 'chicken')"" class=""w-full py-3 bg-forest hover:bg-gold text-cream hover:text-forest font-bold rounded-xl text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"">"
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+ 
+                <!-- Product Card 4: Organic Chicken Breast (Updated fillets on cutting board matching image_290e76.jpg) -->
+                <div class="product-card bg-white rounded-3xl border border-forest/5 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" data-category="chicken">
+                    <div class="relative bg-gradient-to-tr from-cream to-emerald-50 aspect-square flex items-center justify-center p-6 overflow-hidden">
+                        <!-- Custom dynamic SVG drawing of chicken breast fillets on a wooden cutting board (image_290e76.jpg style) -->
+                        <svg class="w-4/5 h-4/5" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Floor Shadow -->
+                            <ellipse cx="100" cy="155" rx="65" ry="12" fill="#1C352D" fill-opacity="0.08"/>
+                            <defs>
+                                <linearGradient id="boardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#D7A15C" />
+                                    <stop offset="50%" stop-color="#BF853F" />
+                                    <stop offset="100%" stop-color="#A06927" />
+                                </linearGradient>
+                                <linearGradient id="breastGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#FFF1ED" />
+                                    <stop offset="60%" stop-color="#FCDAD2" />
+                                    <stop offset="100%" stop-color="#E8B5AB" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Wooden Cutting Board -->
+"                            <path d=""M30 70 C30 65, 40 60, 50 60 L150 60 C160 60, 170 65, 170 70 L170 140 C170 145, 160 150, 150 150 L50 150 C40 150, 30 145, 30 140 Z"" fill=""url(#boardGrad)"" stroke=""#855115"" stroke-width=""1.5""/>"
+"                            <path d=""M30 138 L30 143 C30 148, 40 153, 50 153 L150 153 C160 153, 170 148, 170 143 L170 138 Z"" fill=""#855115""/>"
+                            <!-- Wood Grain Lines -->
+                            <path d="M40 75 Q100 70 160 75" stroke="#9A6223" stroke-width="1.5" fill="none" opacity="0.4"/>
+                            <path d="M35 105 Q100 100 165 105" stroke="#9A6223" stroke-width="1.5" fill="none" opacity="0.4"/>
+                            <path d="M42 135 Q100 130 158 135" stroke="#9A6223" stroke-width="1.5" fill="none" opacity="0.4"/>
+                            <!-- Fillet 1 (Left) -->
+"                            <path d=""M45 100 C40 80, 65 72, 70 95 C75 118, 50 138, 45 140 C42 135, 50 120, 45 100 Z"" fill=""url(#breastGrad)"" stroke=""#DFAC9F"" stroke-width=""0.75""/>"
+                            <!-- Fillet 2 (Middle) -->
+"                            <path d=""M78 95 C72 75, 105 68, 110 95 C115 120, 92 135, 85 138 C80 135, 84 115, 78 95 Z"" fill=""url(#breastGrad)"" stroke=""#DFAC9F"" stroke-width=""0.75""/>"
+                            <!-- Fillet 3 (Right) -->
+"                            <path d=""M115 95 C110 75, 142 70, 148 95 C154 120, 132 132, 125 135 C120 130, 122 115, 115 95 Z"" fill=""url(#breastGrad)"" stroke=""#DFAC9F"" stroke-width=""0.75""/>"
+                            <!-- Shiny Highlight layers on meat -->
+                            <ellipse cx="60" cy="95" rx="4" ry="12" fill="#FFF" opacity="0.25" transform="rotate(-15 60 95)"/>
+                            <ellipse cx="95" cy="90" rx="4" ry="12" fill="#FFF" opacity="0.25" transform="rotate(-15 95 90)"/>
+                            <!-- Rosemary Sprig (Green Garnish) -->
+                            <path d="M100 52 L122 35" stroke="#335928" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M105 48 Q103 42 108 43" stroke="#4B773E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                            <path d="M112 43 Q110 37 115 38" stroke="#4B773E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                            <path d="M118 38 Q118 32 123 34" stroke="#4B773E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                            <!-- White Salt Crystals -->
+                            <circle cx="150" cy="72" r="1.5" fill="#FFF" stroke="#EAEAEA" stroke-width="0.5"/>
+                            <circle cx="155" cy="74" r="1" fill="#FFF"/>
+                            <circle cx="147" cy="76" r="1.2" fill="#FFF"/>
+                        </svg>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-serif font-bold text-lg text-forest">Organic Chicken Breast</h3>
+                                <p class="text-xs text-forest/60">Boneless / Skinless 1kg Pack</p>
+                            </div>
+                            <span class="text-lg font-bold text-forest">Br 650</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs text-gold">?????</span>
+                            <span class="text-xs text-forest/50">(81 reviews)</span>
+                        </div>
+"                        <button onclick=""addToCart('Organic Chicken Breast', 650, 'chicken')"" class=""w-full py-3 bg-forest hover:bg-gold text-cream hover:text-forest font-bold rounded-xl text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"">"
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+ 
+            </div>
+        </div>
+    </section>
+ 
+    <!-- THE "WHY KASSA CHICKEN" SECTION -->
+    <section class="py-20 bg-cream border-t border-forest/5 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Styled Presentation Frame of the User's Golden Pyramid Eggs Image -->
+                <div class="lg:col-span-6 relative flex justify-center">
+                    <div class="relative w-full max-w-[480px]">
+                        <!-- Elegant geometric background shapes -->
+                        <div class="absolute -top-6 -left-6 w-24 h-24 border-t-4 border-l-4 border-gold/40"></div>
+                        <div class="absolute -bottom-6 -right-6 w-24 h-24 border-b-4 border-r-4 border-forest/30"></div>
+                        
+                        <!-- Main Image Container with elegant shadow & border -->
+                        <div class="relative overflow-hidden rounded-3xl shadow-2xl border-4 border-cream">
+                            <!-- High quality CSS mockup / Frame containing reference details of your premium eggs -->
+                            <div class="relative bg-[#FFF9F2] p-8 flex flex-col items-center justify-center aspect-[3/4]">
+                                <!-- Egg Pyramid Artwork/Design mimicking the uploaded asset closely -->
+                                <div class="relative w-full max-w-[280px] flex flex-col items-center justify-center py-6">
+"                                    <!-- A highly aesthetic, detailed vector composition mimicking the clean egg pile in the tray -->"
+                                    <div class="relative flex flex-col items-center space-y-[-18px]">
+                                        <!-- Tier 1 -->
+                                        <div class="w-14 h-18 bg-[#D38244] rounded-[50%] shadow-lg border border-white/20 relative z-40"></div>
+                                        <!-- Tier 2 -->
+                                        <div class="flex space-x-[-12px] relative z-30">
+                                            <div class="w-14 h-18 bg-[#E2955A] rounded-[50%] shadow-lg border border-white/20"></div>
+                                            <div class="w-14 h-18 bg-[#D38244] rounded-[50%] shadow-lg border border-white/20"></div>
+                                            <div class="w-14 h-18 bg-[#CD7B3C] rounded-[50%] shadow-lg border border-white/20"></div>
+                                        </div>
+                                        <!-- Tier 3 -->
+                                        <div class="flex space-x-[-10px] relative z-20">
+                                            <div class="w-14 h-18 bg-[#D38244] rounded-[50%] shadow-lg border border-white/20"></div>
+                                            <div class="w-14 h-18 bg-[#E2955A] rounded-[50%] shadow-lg border border-white/20"></div>
+                                            <div class="w-14 h-18 bg-[#D38244] rounded-[50%] shadow-lg border border-white/20"></div>
+                                            <div class="w-14 h-18 bg-[#E89E62] rounded-[50%] shadow-lg border border-white/20"></div>
+                                        </div>
+                                        <!-- Tier 4 Base -->
+                                        <div class="flex space-x-[-8px] relative z-10">
+                                            <div class="w-14 h-18 bg-[#CD7B3C] rounded-[50%] shadow-lg border border-white/20"></div>
+                                            <div class="w-14 h-18 bg-[#D38244] rounded-[50%] shadow-lg border border-white/20"></div>
+                                            <div class="w-14 h-18 bg-[#E2955A] rounded-[50%] shadow-lg border border-white/20"></div>
+                                            <div class="w-14 h-18 bg-[#CD7B3C] rounded-[50%] shadow-lg border border-white/20"></div>
+                                            <div class="w-14 h-18 bg-[#E89E62] rounded-[50%] shadow-lg border border-white/20"></div>
+                                        </div>
+                                        <!-- Eco Carton Base Tray (Stylized) -->
+                                        <div class="w-[110%] h-10 bg-[#CFC1A6] rounded-xl relative z-0 flex justify-around items-center px-4 shadow-md border-t-2 border-white/30">
+                                            <div class="w-6 h-6 rounded-full bg-[#A8987E]"></div>
+                                            <div class="w-6 h-6 rounded-full bg-[#A8987E]"></div>
+                                            <div class="w-6 h-6 rounded-full bg-[#A8987E]"></div>
+                                            <div class="w-6 h-6 rounded-full bg-[#A8987E]"></div>
+                                            <div class="w-6 h-6 rounded-full bg-[#A8987E]"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-4">
+                                    <p class="font-serif italic text-forest text-sm">Actual Product: Grade-A Farm Brown Eggs</p>
+                                    <p class="text-[10px] uppercase tracking-widest text-gold font-bold mt-1">Symmetrical Sizing Guarantee</p>
+                                </div>
+                            </div>
+                        </div>
+ 
+                        <!-- Mini absolute rating overlay card -->
+                        <div class="absolute bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-forest/5 flex items-center gap-3 animate-bounce" style="animation-duration: 4s;">
+                            <div class="w-10 h-10 bg-gold/10 text-gold rounded-full flex items-center justify-center font-bold">?</div>
+                            <div>
+                                <span class="block text-xs font-bold text-forest">Eco-friendly Packaging</span>
+                                <span class="block text-[10px] text-forest/50">Biodegradable Cartons</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ 
+                <!-- Text info -->
+                <div class="lg:col-span-6 space-y-6">
+                    <span class="text-gold text-xs uppercase font-bold tracking-widest block">Crafting Better Meals</span>
+                    <h2 class="text-3xl sm:text-4xl font-serif font-bold text-forest leading-tight">Our Passion for Perfection Starts in the Coop</h2>
+                    <p class="text-forest/80 font-light leading-relaxed">
+"                        At Kassa Chicken's Egg, we believe that premium quality is not an accident. It is the natural outcome of pristine conditions, dynamic nutrition profiles, and a gentle farm-to-table supply ecosystem."
+                    </p>
+                    
+                    <!-- Feature highlights -->
+                    <div class="space-y-4 pt-4">
+                        <div class="flex gap-3">
+                            <span class="w-6 h-6 rounded-full bg-forest/5 text-gold flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                            <div>
+                                <strong class="text-forest block">Hormone & Antibiotic Free Policy</strong>
+                                <span class="text-sm text-forest/70">Our layers feed purely on organic seed mixes ensuring wholesome nutrient density in every yolk.</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="w-6 h-6 rounded-full bg-forest/5 text-gold flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                            <div>
+                                <strong class="text-forest block">Strict Bio-Security Measures</strong>
+"                                <span class=""text-sm text-forest/70"">Daily cleanings, temperature-optimized nests, and veterinary diagnostics protect your family with strict safety.</span>"
+                            </div>
+                        </div>
+                    </div>
+ 
+                    <div class="pt-6">
+                        <a href="#products" class="inline-flex items-center text-forest font-bold hover:text-gold transition-colors duration-200">
+                            Explore the Full Farm Menu
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+ 
+            </div>
+        </div>
+    </section>
+ 
+    <!-- THE EGG SUBSCRIPTION BANNER -->
+    <section id="subscription" class="py-20 bg-gradient-to-r from-forest to-darkGreen text-cream relative overflow-hidden">
+        <!-- Graphic curves -->
+        <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-gold/10 rounded-full blur-3xl"></div>
+        <div class="absolute -top-20 -right-20 w-80 h-80 bg-gold/5 rounded-full blur-3xl"></div>
+ 
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 space-y-6">
+                    <span class="text-gold text-xs uppercase font-bold tracking-widest block">Lock In Freshness & Savings</span>
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-cream leading-tight">Never Run Out of Protein with our Egg Subscriptions</h2>
+                    <p class="text-cream/80 font-light text-base md:text-lg">
+                        Simplify your family grocery runs. Subscribe once to receive guaranteed weekly or bi-weekly egg cartons delivered fresh to your door at dynamic discounted rates.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-4 text-sm">
+                        <span class="inline-flex items-center gap-2 bg-cream/10 px-4 py-2 rounded-full border border-cream/10">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gold"></span> 5% OFF Weekly Subscribers
+                        </span>
+                        <span class="inline-flex items-center gap-2 bg-cream/10 px-4 py-2 rounded-full border border-cream/10">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gold"></span> Pause/Cancel Anytime
+                        </span>
+                        <span class="inline-flex items-center gap-2 bg-cream/10 px-4 py-2 rounded-full border border-cream/10">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gold"></span> Priority Free Delivery
+                        </span>
+                    </div>
+                </div>
+ 
+                <!-- Live Plan Builder Widget -->
+                <div class="lg:col-span-5 bg-white text-forest p-8 rounded-3xl shadow-2xl border border-forest/10 space-y-6">
+                    <h3 class="font-serif font-bold text-xl text-center">Customize Your Subscription</h3>
+                    
+                    <!-- Interval option -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-2">Delivery Frequency</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setFreq('weekly')" id="freq-weekly" class="px-4 py-2 text-xs font-bold rounded-xl bg-forest text-cream transition-all">Weekly</button>
+                            <button onclick="setFreq('biweekly')" id="freq-biweekly" class="px-4 py-2 text-xs font-bold rounded-xl bg-cream text-forest/70 border border-forest/10 transition-all">Bi-Weekly</button>
+                        </div>
+                    </div>
+ 
+                    <!-- Size options -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-2">Carton Size</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setSize('30')" id="size-30" class="px-4 py-2 text-xs font-bold rounded-xl bg-forest text-cream transition-all">30 Eggs (Family)</button>
+                            <button onclick="setSize('60')" id="size-60" class="px-4 py-2 text-xs font-bold rounded-xl bg-cream text-forest/70 border border-forest/10 transition-all">60 Eggs (Mega)</button>
+                        </div>
+                    </div>
+ 
+                    <!-- Live calculation -->
+                    <div class="p-4 bg-cream rounded-2xl border border-forest/5 flex justify-between items-center">
+                        <div>
+                            <span class="block text-xs font-semibold text-forest/60">Estimated Cost:</span>
+                            <span class="block text-xs text-forest/50 line-through" id="orig-price">Br 790.00</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-forest" id="sub-total">Br 712.50</span>
+                            <span class="block text-[10px] text-green-600 font-bold uppercase tracking-wider">Save 5%!</span>
+                        </div>
+                    </div>
+ 
+                    <button onclick="subscribeNow()" class="w-full py-4 bg-gold text-forest hover:bg-forest hover:text-cream font-bold rounded-xl text-sm shadow-md transition-all duration-300">
+                        Activate Subscription
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+    <!-- CONTACT & WHOLESALE FORM PORTAL -->
+    <section id="contact" class="py-20 bg-cream relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                
+                <!-- Info text and FAQ -->
+                <div class="lg:col-span-5 space-y-8">
+                    <div>
+                        <span class="text-gold text-xs uppercase font-bold tracking-widest block mb-1">Let's Connect</span>
+                        <h2 class="text-3xl sm:text-4xl font-serif font-bold text-forest">Wholesale Partnerships & General Inquiries</h2>
+                        <p class="text-forest/80 font-light mt-4">
+"                            Are you a bakery, hotel, restaurant, or catering group? We provide high-volume retail logistics with flexible wholesale payment structures."
+                        </p>
+                    </div>
+ 
+                    <!-- Direct Contacts Quick Card -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-forest/10 space-y-3.5">
+                        <p class="text-xs font-bold uppercase tracking-wider text-gold">Direct Contacts</p>
+                        <div class="space-y-3 text-sm text-forest">
+                            <p class="flex items-center gap-2.5">
+                                <svg class="w-4 h-4 text-forest/70 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                </svg>
+                                <strong>Phone:</strong> <a href="tel:0912038512" class="hover:underline text-forest font-medium">0912038512</a>
+                            </p>
+                            <p class="flex items-center gap-2.5">
+                                <svg class="w-4 h-4 text-forest/70 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+"                                <strong>Address:</strong> Ethiopia, Hosanna"
+                            </p>
+                        </div>
+                    </div>
+ 
+                    <!-- Modern FAQ Accordion -->
+                    <div class="space-y-4">
+                        <h3 class="font-serif font-bold text-xl text-forest border-b border-forest/10 pb-2">Common Questions</h3>
+                        
+                        <!-- Accordion 1 -->
+                        <div class="border border-forest/10 rounded-2xl p-4 bg-white/50 cursor-pointer" onclick="toggleFaq(1)">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-sm text-forest">What is the delivery radius?</span>
+                                <span class="text-xs text-gold" id="faq-icon-1">+</span>
+                            </div>
+                            <p class="text-xs text-forest/70 mt-3 hidden" id="faq-ans-1">
+                                We currently deliver to Hosanna and all surrounding central metropolitan corridors. Enter your details during checkout or contact support to verify shipping timelines.
+                            </p>
+                        </div>
+ 
+                        <!-- Accordion 2 -->
+                        <div class="border border-forest/10 rounded-2xl p-4 bg-white/50 cursor-pointer" onclick="toggleFaq(2)">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-sm text-forest">Do you offer wholesale bulk discounts?</span>
+                                <span class="text-xs text-gold" id="faq-icon-2">+</span>
+                            </div>
+                            <p class="text-xs text-forest/70 mt-3 hidden" id="faq-ans-2">
+                                Absolutely. Businesses ordering more than 10 cartons (300 eggs) or 20kg of poultry per week qualify for deep custom tier discounts with specialized shipping privileges.
+                            </p>
+                        </div>
+ 
+                        <!-- Accordion 3 -->
+                        <div class="border border-forest/10 rounded-2xl p-4 bg-white/50 cursor-pointer" onclick="toggleFaq(3)">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-sm text-forest">How long is the shelf life of your eggs?</span>
+                                <span class="text-xs text-gold" id="faq-icon-3">+</span>
+                            </div>
+                            <p class="text-xs text-forest/70 mt-3 hidden" id="faq-ans-3">
+"                                Because our eggs reach you within 24 hours of collection, they stay exceptionally fresh for up to 30 days when kept refrigerated."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+ 
+                <!-- Custom Multi-Form Portal (Retail vs Wholesale tabs) -->
+                <div class="lg:col-span-7 bg-white rounded-3xl shadow-xl border border-forest/5 overflow-hidden">
+                    <!-- Form Selection Tabs -->
+                    <div class="flex border-b border-forest/10">
+                        <button onclick="setContactTab('retail')" id="tab-retail" class="flex-1 py-4 text-center font-serif font-bold text-sm bg-cream text-forest transition-all border-r border-forest/5">
+                            Retail Query
+                        </button>
+                        <button onclick="setContactTab('wholesale')" id="tab-wholesale" class="flex-1 py-4 text-center font-serif font-bold text-sm bg-white text-forest/60 hover:text-forest transition-all">
+                            Wholesale Inquiry
+                        </button>
+                    </div>
+ 
+                    <div class="p-8">
+                        <!-- Retail Form -->
+"                        <form id=""form-retail"" onsubmit=""submitForm(event, 'retail')"" class=""space-y-4"">"
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Your Name</label>
+                                    <input type="text" required class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm" placeholder="John Doe">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Email Address</label>
+                                    <input type="email" required class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm" placeholder="john@example.com">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Subject</label>
+                                <input type="text" required class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm" placeholder="Egg Freshness / Local Delivery Query">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Message</label>
+                                <textarea required rows="4" class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm resize-none" placeholder="How can we help you today?"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-4 bg-forest hover:bg-gold text-cream hover:text-forest font-bold rounded-xl text-sm transition-all duration-300">
+                                Send Message
+                            </button>
+                        </form>
+ 
+                        <!-- Wholesale Form (Hidden by default) -->
+"                        <form id=""form-wholesale"" onsubmit=""submitForm(event, 'wholesale')"" class=""space-y-4 hidden"">"
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Business Name</label>
+                                    <input type="text" required class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm" placeholder="Gourmet Bakery LLC">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Contact Person</label>
+                                    <input type="text" required class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm" placeholder="Chef Sarah">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Work Email</label>
+                                    <input type="email" required class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm" placeholder="wholesale@gourmet.com">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Phone Number</label>
+                                    <input type="tel" required class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm" placeholder="0912038512">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Estimated Weekly Egg Count</label>
+                                    <select class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm">
+                                        <option>100 - 300 Eggs</option>
+"                                        <option>300 - 1,000 Eggs</option>"
+"                                        <option>1,000+ Eggs</option>"
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Estimated Poultry Weight</label>
+                                    <select class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm">
+                                        <option>0 - 10kg</option>
+                                        <option>10kg - 50kg</option>
+                                        <option>50kg+ Wholesale Tier</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full py-4 bg-gold text-forest hover:bg-forest hover:text-cream font-bold rounded-xl text-sm transition-all duration-300">
+                                Submit Wholesale Application
+                            </button>
+                        </form>
+                    </div>
+                </div>
+ 
+            </div>
+        </div>
+    </section>
+ 
+    <!-- FOOTER -->
+    <footer class="bg-darkGreen text-cream pt-16 pb-12 border-t border-cream/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b border-cream/10">
+                <!-- Branding column -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-9 h-9 bg-cream rounded-full flex items-center justify-center shadow-md">
+                            <svg class="w-5 h-5 text-forest" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C7.5 2 4 7.5 4 12c0 4.5 3.5 10 8 10s8-5.5 8-10c0-4.5-3.5-10-8-10zm0 18c-3.3 0-6-4.2-6-8s2.7-8 6-8 6 4.2 6 8-2.7 8-6 8z"/>
+                            </svg>
+                        </div>
+                        <span class="font-serif text-lg font-bold tracking-tight text-cream">Kassa Chicken's</span>
+                    </div>
+                    <p class="text-xs text-cream/60 leading-relaxed font-light">
+"                        Artisanal farming, ethical care, and pristine local deliveries. Cultivating nourishing, delicious meals for discerning households and businesses."
+                    </p>
+                </div>
+ 
+                <!-- Navigation Columns -->
+                <div>
+                    <h4 class="font-serif font-bold text-sm uppercase tracking-wider text-gold mb-4">Quick Links</h4>
+                    <ul class="space-y-2.5 text-xs text-cream/70">
+                        <li><a href="#home" class="hover:text-gold transition-colors">Go to Top</a></li>
+                        <li><a href="#why-us" class="hover:text-gold transition-colors">Our Quality Process</a></li>
+                        <li><a href="#products" class="hover:text-gold transition-colors">Marketplace Store</a></li>
+                        <li><a href="#subscription" class="hover:text-gold transition-colors">Subscription Savings</a></li>
+                    </ul>
+                </div>
+ 
+                <div>
+                    <h4 class="font-serif font-bold text-sm uppercase tracking-wider text-gold mb-4">Delivery Zones</h4>
+                    <p class="text-xs text-cream/60 leading-relaxed font-light">
+"                        Operating primary logistical networks across Hosanna metropolis corridors, surrounding neighborhoods, and local commercial areas in Ethiopia."
+                    </p>
+                </div>
+ 
+                <!-- Contact & Social -->
+                <div class="space-y-4">
+                    <h4 class="font-serif font-bold text-sm uppercase tracking-wider text-gold mb-4">Connect Directly</h4>
+                    <p class="text-xs text-cream/70 leading-relaxed">
+                        <strong>Email:</strong> dembelokassalago@gmail.com <br>
+                        <strong>Phone:</strong> <a href="tel:0912038512" class="hover:text-gold transition-colors">0912038512</a> <br>
+"                        <strong>Address:</strong> Ethiopia, Hosanna"
+                    </p>
+                    <div class="flex gap-3">
+                        <!-- Custom inline SVG social icons pointing to Kassa Poultry on Instagram -->
+                        <a href="https://www.instagram.com/kassa_poultry" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-cream/10 flex items-center justify-center hover:bg-gold hover:text-forest transition-all" aria-label="Instagram">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                        <a href="https://www.instagram.com/kassa_poultry" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-cream/10 flex items-center justify-center hover:bg-gold hover:text-forest transition-all" aria-label="Facebook">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+ 
+            <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-cream/40 pt-8 mt-4">
+                <p>  2026 Kassa Chicken's Egg. All organic rights reserved.</p>
+                <div class="flex gap-4 mt-4 sm:mt-0">
+                    <a href="#" class="hover:underline">Privacy Policy</a>
+                    <a href="#" class="hover:underline">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+ 
+    <!-- SLIDE-OUT SHOPPING CART DRAWER -->
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-500 ease-in-out border-l border-forest/10 flex flex-col">
+        <!-- Cart Header -->
+        <div class="p-6 border-b border-forest/10 flex items-center justify-between bg-cream">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-forest" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                <h3 class="font-serif font-bold text-xl text-forest">Your Fresh Cart</h3>
+            </div>
+            <button onclick="toggleCart()" class="p-2 text-forest/60 hover:text-forest rounded-full hover:bg-forest/5" aria-label="Close Shopping Cart">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+ 
+        <!-- Cart Items (Scrollable) -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-4" id="cart-items-container">
+            <!-- Empty state fallback shown by default -->
+            <div id="cart-empty" class="text-center py-12 space-y-4">
+                <div class="w-16 h-16 bg-cream rounded-full flex items-center justify-center mx-auto text-forest/30">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                </div>
+                <p class="text-forest/60 text-sm">Your basket is currently empty.</p>
+                <a href="#products" onclick="toggleCart()" class="inline-flex px-5 py-2.5 bg-forest text-cream text-xs font-bold rounded-full">Explore Marketplace</a>
+            </div>
+        </div>
+ 
+        <!-- Cart Footer -->
+        <div class="p-6 border-t border-forest/10 bg-cream space-y-4">
+            <div class="flex justify-between items-center text-sm font-semibold text-forest">
+                <span>Subtotal</span>
+                <span id="cart-total-price" class="text-lg font-bold">Br 0.00</span>
+            </div>
+            <p class="text-[10px] text-forest/50">Shipping & Delivery calculated dynamically at checkout dispatch.</p>
+            <button onclick="openCheckoutModal()" id="btn-checkout" class="w-full py-4 bg-forest text-cream hover:bg-gold hover:text-forest font-bold rounded-xl text-sm transition-all duration-300" disabled>
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+ 
+    <!-- CUSTOM TOAST NOTIFICATION NOTIFY SYSTEM -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-forest text-cream px-6 py-3.5 rounded-full shadow-2xl border border-cream/10 flex items-center gap-3 z-50 pointer-events-none opacity-0 scale-90 transition-all duration-300">
+        <span class="w-2 h-2 rounded-full bg-gold"></span>
+        <span id="toast-message" class="text-xs font-semibold tracking-wide">Item added to your basket!</span>
+    </div>
+ 
+    <!-- CUSTOM INTERACTIVE CHECKOUT MODAL -->
+    <div id="checkout-modal" class="fixed inset-0 bg-forest/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl border border-forest/10 space-y-6 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 p-2 text-forest/40 hover:text-forest rounded-full" aria-label="Close Checkout">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="text-center space-y-2">
+                <span class="text-gold text-xs uppercase font-bold tracking-widest block">Complete Your Order</span>
+                <h3 class="font-serif font-bold text-2xl text-forest">Dispatch Verification</h3>
+                <p class="text-xs text-forest/60">Your order will be packaged directly at Kassa Chicken farm.</p>
+            </div>
+ 
+            <!-- Checkout Order Summary -->
+            <div class="p-4 bg-cream rounded-2xl border border-forest/5 space-y-2">
+                <p class="text-xs font-bold uppercase tracking-wider text-forest/70">Order Summary</p>
+                <div id="checkout-summary-list" class="space-y-1.5 text-xs text-forest/80">
+                    <!-- Loaded dynamically -->
+                </div>
+                <div class="border-t border-forest/10 pt-2 flex justify-between text-sm font-bold text-forest">
+                    <span>Total Amount due</span>
+                    <span id="checkout-total-val">Br 0.00</span>
+                </div>
+            </div>
+ 
+            <!-- Customer Shipping Info Form -->
+            <form onsubmit="confirmOrder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Full Delivery Name</label>
+                    <input type="text" required id="ship-name" class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm" placeholder="Johnathan Doe">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Street Address</label>
+"                    <input type=""text"" required id=""ship-address"" class=""w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm"" placeholder=""Hosanna Road, Block B"">"
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">City / Region</label>
+"                        <input type=""text"" required id=""ship-city"" class=""w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm"" placeholder=""Hosanna, Ethiopia"">"
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-forest/60 mb-1">Mobile Contact</label>
+                        <input type="tel" required id="ship-phone" class="w-full px-4 py-3 rounded-xl border border-forest/10 bg-cream/30 focus:outline-none focus:border-gold text-sm" placeholder="0912038512">
+                    </div>
+                </div>
+ 
+                <div class="flex items-center gap-2 py-2">
+                    <input type="checkbox" required id="terms" class="rounded text-forest focus:ring-gold">
+                    <label for="terms" class="text-[10px] text-forest/60">I agree that these items are gathered freshly in under 24 hours of dispatch.</label>
+                </div>
+ 
+                <button type="submit" class="w-full py-4 bg-forest text-cream hover:bg-gold hover:text-forest font-bold rounded-xl text-sm transition-all duration-300">
+                    Confirm & Schedule Delivery
+                </button>
+            </form>
+        </div>
+    </div>
+ 
+    <!-- SUCCESS MODAL -->
+    <div id="success-modal" class="fixed inset-0 bg-forest/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-forest/10 space-y-6 text-center relative">
+            <div class="w-20 h-20 bg-gold/10 text-gold rounded-full flex items-center justify-center mx-auto text-4xl font-bold border-2 border-gold/30">
+                ?
+            </div>
+            <div class="space-y-2">
+                <h3 class="font-serif font-bold text-2xl text-forest">Order Received!</h3>
+                <p class="text-sm text-forest/80 leading-relaxed">
+                    Thank you! Our poultry dispatch team in Hosanna is processing your shipment. We will send a tracking timeline directly to your mobile contact.
+                </p>
+            </div>
+            <button onclick="closeSuccessModal()" class="w-full py-3 bg-forest text-cream hover:bg-gold hover:text-forest font-bold rounded-xl text-sm transition-all">
+                Return to Storefront
+            </button>
+        </div>
+    </div>
+ 
+    <!-- THREE.JS INTERACTIVE 3D SCRIPT -->
+    <script>
+        // Global variables for Three.js
+"        let scene, camera, renderer, eggMesh;"
+        let isDragging = false;
+"        let previousMousePosition = { x: 0, y: 0 };"
+        const container = document.getElementById('threejs-container');
+ 
+        // Color definitions for the egg customization
+        const eggColors = {
+"            brown: { color: 0xD48C45, roughness: 0.85, metalness: 0.1 },"
+"            white: { color: 0xF5F0EA, roughness: 0.9, metalness: 0.05 },"
+"            gold: { color: 0xD4AF37, roughness: 0.2, metalness: 0.9 }"
+        };
+ 
+        function init3D() {
+            // 1. Create Scene & set background transparent
+            scene = new THREE.Scene();
+ 
+            // 2. Setup Camera
+            const aspect = container.clientWidth / container.clientHeight;
+"            camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);"
+            camera.position.z = 8;
+ 
+            // 3. Create Renderer
+"            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });"
+"            renderer.setSize(container.clientWidth, container.clientHeight);"
+"            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));"
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+ 
+            // 4. Create the 3D Egg Geometry
+            const segments = 48;
+"            const geometry = new THREE.SphereGeometry(2, segments, segments);"
+            
+            // Deform the sphere vertices to taper towards the top (creating an authentic egg look)
+            const positions = geometry.attributes.position;
+            for (let i = 0; i < positions.count; i++) {
+                let x = positions.getX(i);
+                let y = positions.getY(i);
+                let z = positions.getZ(i);
+ 
+                // Formula: taper x and z scaling proportional to height (y)
+                let scale = 1.0 - (y + 2.0) * 0.08;
+                if (scale < 0.1) scale = 0.1;
+ 
+"                positions.setX(i, x * scale);"
+"                positions.setZ(i, z * scale);"
+            }
+            geometry.computeVertexNormals();
+ 
+            // 5. Create default Brown Material
+            const material = new THREE.MeshStandardMaterial({
+"                color: eggColors.brown.color,"
+"                roughness: eggColors.brown.roughness,"
+"                metalness: eggColors.brown.metalness,"
+                bumpScale: 0.02
+            });
+ 
+            // 6. Create Mesh and Add to Scene
+"            eggMesh = new THREE.Mesh(geometry, material);"
+            eggMesh.position.y = -0.3; // Center visually inside frame
+            scene.add(eggMesh);
+ 
+            // 7. Setup Advanced Lights
+"            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);"
+            scene.add(ambientLight);
+ 
+            // Key Light
+"            const keyLight = new THREE.DirectionalLight(0xffffff, 0.8);"
+"            keyLight.position.set(5, 5, 5);"
+            scene.add(keyLight);
+ 
+            // Fill Light
+"            const fillLight = new THREE.DirectionalLight(0xddf0ff, 0.4);"
+"            fillLight.position.set(-5, 3, -5);"
+            scene.add(fillLight);
+ 
+            // Back Light
+"            const rimLight = new THREE.PointLight(0xfff5ea, 1.2, 20);"
+"            rimLight.position.set(0, 4, -4);"
+            scene.add(rimLight);
+ 
+            // 8. Handle Interaction drag/swipe events
+"            container.addEventListener('mousedown', (e) => {"
+                isDragging = true;
+"                previousMousePosition = { x: e.clientX, y: e.clientY };"
+            });
+ 
+"            container.addEventListener('mousemove', (e) => {"
+                if (!isDragging) return;
+                const deltaMove = {
+"                    x: e.clientX - previousMousePosition.x,"
+                    y: e.clientY - previousMousePosition.y
+                };
+ 
+                eggMesh.rotation.y += deltaMove.x * 0.005;
+                eggMesh.rotation.x += deltaMove.y * 0.005;
+ 
+"                previousMousePosition = { x: e.clientX, y: e.clientY };"
+            });
+ 
+"            window.addEventListener('mouseup', () => {"
+                isDragging = false;
+            });
+ 
+            // Add touch support for mobile compatibility
+"            container.addEventListener('touchstart', (e) => {"
+                if (e.touches.length === 1) {
+                    isDragging = true;
+"                    previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };"
+                }
+            });
+ 
+"            container.addEventListener('touchmove', (e) => {"
+                if (!isDragging || e.touches.length !== 1) return;
+                const deltaMove = {
+"                    x: e.touches[0].clientX - previousMousePosition.x,"
+                    y: e.touches[0].clientY - previousMousePosition.y
+                };
+ 
+                eggMesh.rotation.y += deltaMove.x * 0.008;
+                eggMesh.rotation.x += deltaMove.y * 0.008;
+ 
+"                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };"
+            });
+ 
+"            container.addEventListener('touchend', () => {"
+                isDragging = false;
+            });
+ 
+            // 9. Start Animation Loop
+            animate();
+        }
+ 
+        function animate() {
+            requestAnimationFrame(animate);
+ 
+            // Subtle continuous rotating when user isn't dragging
+            if (!isDragging && eggMesh) {
+                eggMesh.rotation.y += 0.005;
+                // Add soft floating bounce
+                eggMesh.position.y = -0.3 + Math.sin(Date.now() * 0.0015) * 0.08;
+            }
+ 
+"            renderer.render(scene, camera);"
+        }
+ 
+        function changeEggStyle(style) {
+            if (!eggMesh) return;
+            const config = eggColors[style];
+ 
+            eggMesh.material.color.setHex(config.color);
+            eggMesh.material.roughness = config.roughness;
+            eggMesh.material.metalness = config.metalness;
+ 
+"            const styles = ['brown', 'white', 'gold'];"
+            styles.forEach(s => {
+                const btn = document.getElementById(`btn-egg-${s}`);
+                if (s === style) {
+                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-forest text-cream border border-forest transition-all";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-cream text-forest border border-forest/20 hover:bg-forest/5 transition-all";
+                }
+            });
+ 
+            showToast(`Showcase Egg styled to: ${style.toUpperCase()}`);
+        }
+ 
+        // Resize handler for Canvas keeping high visual layout
+"        window.addEventListener('resize', () => {"
+            if (!container || !renderer || !camera) return;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+"            renderer.setSize(width, height);"
+        });
+ 
+        // Start Three JS upon load
+        window.onload = function() {
+            init3D();
+        };
+    </script>
+ 
+    <!-- INTERACTIVE APP / BASKET LOGIC -->
+    <script>
+        // Shopping Basket State
+        let cart = [];
+        let subscriptionConfig = {
+"            frequency: 'weekly',"
+            size: '30'
+        };
+ 
+        // UI Tabs & Views
+        function setContactTab(tab) {
+            const formRetail = document.getElementById('form-retail');
+            const formWholesale = document.getElementById('form-wholesale');
+            const tabRetail = document.getElementById('tab-retail');
+            const tabWholesale = document.getElementById('tab-wholesale');
+ 
+            if (tab === 'retail') {
+                formRetail.classList.remove('hidden');
+                formWholesale.classList.add('hidden');
+                tabRetail.className = "flex-1 py-4 text-center font-serif font-bold text-sm bg-cream text-forest transition-all border-r border-forest/5";
+                tabWholesale.className = "flex-1 py-4 text-center font-serif font-bold text-sm bg-white text-forest/60 hover:text-forest transition-all";
+            } else {
+                formRetail.classList.add('hidden');
+                formWholesale.classList.remove('hidden');
+                tabRetail.className = "flex-1 py-4 text-center font-serif font-bold text-sm bg-white text-forest/60 hover:text-forest transition-all border-r border-forest/5";
+                tabWholesale.className = "flex-1 py-4 text-center font-serif font-bold text-sm bg-cream text-forest transition-all";
+            }
+        }
+ 
+        function filterProducts(category) {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+ 
+            // Toggle filter button styles
+"            const filters = ['all', 'eggs', 'chicken'];"
+            filters.forEach(f => {
+                const btn = document.getElementById(`btn-filter-${f}`);
+                if (f === category) {
+                    btn.className = "px-5 py-2 rounded-full text-xs font-semibold bg-forest text-cream border border-forest transition-all";
+                } else {
+                    btn.className = "px-5 py-2 rounded-full text-xs font-semibold bg-transparent text-forest/70 border border-forest/10 hover:bg-forest/5 hover:text-forest transition-all";
+                }
+            });
+        }
+ 
+        // Cart Drawer Control
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.toggle('translate-x-full');
+        }
+ 
+        // Add Item to State
+"        function addToCart(name, price, category) {"
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+"                cart.push({ name, price, quantity: 1, category });"
+            }
+            updateCartUI();
+            showToast(`Added ${name} to your basket!`);
+        }
+ 
+        function removeFromCart(name) {
+            cart = cart.filter(item => item.name !== name);
+            updateCartUI();
+        }
+ 
+        // Adjust quantities in cart
+"        function changeQuantity(name, amount) {"
+            const item = cart.find(item => item.name === name);
+            if (item) {
+                item.quantity += amount;
+                if (item.quantity <= 0) {
+                    removeFromCart(name);
+                } else {
+                    updateCartUI();
+                }
+            }
+        }
+ 
+        // Keep cart UI synchronized
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const badge = document.getElementById('cart-badge');
+            const totalPriceEl = document.getElementById('cart-total-price');
+            const checkoutBtn = document.getElementById('btn-checkout');
+ 
+            // Clear previous render
+            container.innerHTML = '';
+ 
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div id="cart-empty" class="text-center py-12 space-y-4">
+                        <div class="w-16 h-16 bg-cream rounded-full flex items-center justify-center mx-auto text-forest/30">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                        <p class="text-forest/60 text-sm">Your basket is currently empty.</p>
+                        <a href="#products" onclick="toggleCart()" class="inline-flex px-5 py-2.5 bg-forest text-cream text-xs font-bold rounded-full">Explore Marketplace</a>
+                    </div>
+                `;
+                badge.classList.add('scale-0');
+                badge.classList.remove('scale-100');
+                totalPriceEl.innerText = 'Br 0.00';
+                checkoutBtn.disabled = true;
+                checkoutBtn.className = "w-full py-4 bg-forest/40 text-cream/70 cursor-not-allowed font-bold rounded-xl text-sm transition-all duration-300";
+                return;
+            }
+ 
+            // Display elements
+            let subtotal = 0;
+            let totalItems = 0;
+ 
+            cart.forEach(item => {
+                const itemCost = item.price * item.quantity;
+                subtotal += itemCost;
+                totalItems += item.quantity;
+ 
+                const row = document.createElement('div');
+                row.className = "bg-cream/40 p-4 rounded-2xl border border-forest/5 flex justify-between items-center";
+                row.innerHTML = `
+                    <div class="space-y-1">
+                        <h4 class="font-serif font-bold text-sm text-forest">${item.name}</h4>
+                        <p class="text-xs text-forest/60">Br ${item.price.toFixed(2)} each</p>
+                        <button onclick="removeFromCart('${item.name}')" class="text-[10px] text-red-500 hover:underline">Remove</button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center border border-forest/10 rounded-lg overflow-hidden bg-white">
+"                            <button onclick=""changeQuantity('${item.name}', -1)"" class=""px-2 py-1 text-xs hover:bg-forest/5 font-bold"">-</button>"
+                            <span class="px-3 py-1 text-xs font-bold bg-cream/10">${item.quantity}</span>
+"                            <button onclick=""changeQuantity('${item.name}', 1)"" class=""px-2 py-1 text-xs hover:bg-forest/5 font-bold"">+</button>"
+                        </div>
+                        <span class="text-sm font-bold text-forest">Br ${itemCost.toFixed(2)}</span>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+ 
+            // Update badge & totals
+            badge.innerText = totalItems;
+            badge.classList.remove('scale-0');
+            badge.classList.add('scale-100');
+ 
+            totalPriceEl.innerText = `Br ${subtotal.toFixed(2)}`;
+            checkoutBtn.disabled = false;
+            checkoutBtn.className = "w-full py-4 bg-forest text-cream hover:bg-gold hover:text-forest font-bold rounded-xl text-sm transition-all duration-300";
+        }
+ 
+        // Modal checkout actions
+        function openCheckoutModal() {
+            toggleCart(); // close drawer
+            const modal = document.getElementById('checkout-modal');
+            const summaryList = document.getElementById('checkout-summary-list');
+            const totalVal = document.getElementById('checkout-total-val');
+ 
+            // Build dynamic summary
+            summaryList.innerHTML = '';
+            let total = 0;
+            cart.forEach(item => {
+                const row = document.createElement('div');
+                row.className = "flex justify-between";
+                row.innerHTML = `
+                    <span>${item.name} (x${item.quantity})</span>
+                    <span>Br ${(item.price * item.quantity).toFixed(2)}</span>
+                `;
+                summaryList.appendChild(row);
+                total += item.price * item.quantity;
+            });
+ 
+            totalVal.innerText = `Br ${total.toFixed(2)}`;
+ 
+            // Show Modal
+"            modal.classList.remove('pointer-events-none', 'opacity-0');"
+        }
+ 
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkout-modal');
+"            modal.classList.add('pointer-events-none', 'opacity-0');"
+        }
+ 
+        function confirmOrder(event) {
+            event.preventDefault();
+            closeCheckoutModal();
+ 
+            // Clear Cart
+            cart = [];
+            updateCartUI();
+ 
+            // Show Custom Success Feedback modal
+            const success = document.getElementById('success-modal');
+"            success.classList.remove('pointer-events-none', 'opacity-0');"
+        }
+ 
+        function closeSuccessModal() {
+            const success = document.getElementById('success-modal');
+"            success.classList.add('pointer-events-none', 'opacity-0');"
+        }
+ 
+        // Subscription Interactive Pricing Formulas (Using 5% Discount)
+        function setFreq(freq) {
+            subscriptionConfig.frequency = freq;
+            updateSubPricing();
+ 
+            const btnW = document.getElementById('freq-weekly');
+            const btnB = document.getElementById('freq-biweekly');
+            if (freq === 'weekly') {
+                btnW.className = "px-4 py-2 text-xs font-bold rounded-xl bg-forest text-cream transition-all";
+                btnB.className = "px-4 py-2 text-xs font-bold rounded-xl bg-cream text-forest/70 border border-forest/10 transition-all";
+            } else {
+                btnB.className = "px-4 py-2 text-xs font-bold rounded-xl bg-forest text-cream transition-all";
+                btnW.className = "px-4 py-2 text-xs font-bold rounded-xl bg-cream text-forest/70 border border-forest/10 transition-all";
+            }
+        }
+ 
+        function setSize(size) {
+            subscriptionConfig.size = size;
+            updateSubPricing();
+ 
+            const btn30 = document.getElementById('size-30');
+            const btn60 = document.getElementById('size-60');
+            if (size === '30') {
+                btn30.className = "px-4 py-2 text-xs font-bold rounded-xl bg-forest text-cream transition-all";
+                btn60.className = "px-4 py-2 text-xs font-bold rounded-xl bg-cream text-forest/70 border border-forest/10 transition-all";
+            } else {
+                btn60.className = "px-4 py-2 text-xs font-bold rounded-xl bg-forest text-cream transition-all";
+                btn30.className = "px-4 py-2 text-xs font-bold rounded-xl bg-cream text-forest/70 border border-forest/10 transition-all";
+            }
+        }
+ 
+        function updateSubPricing() {
+            const origPriceEl = document.getElementById('orig-price');
+            const subTotalEl = document.getElementById('sub-total');
+ 
+"            // 30 Eggs = 750 Birr, 60 Eggs = 1500 Birr"
+            let basePrice = subscriptionConfig.size === '30' ? 750 : 1500;
+            if (subscriptionConfig.frequency === 'biweekly') {
+                basePrice += 40;
+            }
+ 
+            const discountPrice = basePrice * 0.95; // 5% discount
+            origPriceEl.innerText = `Br ${(basePrice + 40).toFixed(2)}`;
+            subTotalEl.innerText = `Br ${discountPrice.toFixed(2)}`;
+        }
+ 
+        function subscribeNow() {
+            const frequencyLabel = subscriptionConfig.frequency.toUpperCase();
+            const sizeLabel = subscriptionConfig.size === '30' ? 'Family (30 Eggs)' : 'Mega (60 Eggs)';
+            const calculatedTotal = document.getElementById('sub-total').innerText;
+ 
+            showToast(`Registered: ${sizeLabel} Plan - Delivered ${frequencyLabel} for ${calculatedTotal}`);
+        }
+ 
+        // Custom Notification Toast System
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+ 
+            toastMsg.innerText = message;
+"            toast.classList.remove('opacity-0', 'scale-90');"
+"            toast.classList.add('opacity-100', 'scale-100');"
+ 
+            setTimeout(() => {
+"                toast.classList.remove('opacity-100', 'scale-100');"
+"                toast.classList.add('opacity-0', 'scale-90');"
+"            }, 3000);"
+        }
+ 
+        // FAQ Accordion system
+        function toggleFaq(index) {
+            const ans = document.getElementById(`faq-ans-${index}`);
+            const icon = document.getElementById(`faq-icon-${index}`);
+ 
+            if (ans.classList.contains('hidden')) {
+                ans.classList.remove('hidden');
+                icon.innerText = '-';
+            } else {
+                ans.classList.add('hidden');
+                icon.innerText = '+';
+            }
+        }
+ 
+        // Simulated form submit
+"        function submitForm(event, type) {"
+            event.preventDefault();
+            showToast(`Your ${type} submission has been transmitted directly to our farm!`);
+            event.target.reset();
+        }
+    </script>
+</body>
+</html>
